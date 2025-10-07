@@ -221,7 +221,7 @@ public struct SearchableMenu: View {
                                 .background(index == 0 && !searchText.isEmpty ? accentColor : Color.clear)
                             }
                         }
-                        if addNew && searchText != "" && !options.contains(where: { $0.lowercased() == searchText.lowercased()}){
+                        if addNew && !searchText.trimmingCharacters(in: .whitespaces).isEmpty && !options.contains(where: { $0.lowercased() == searchText.lowercased()}){
                             Button(action: {
                                 isOptionSelected = true
                                 isDropdownVisible = false
