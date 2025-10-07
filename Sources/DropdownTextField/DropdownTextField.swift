@@ -190,7 +190,7 @@ public struct SearchableMenu: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 18, height: 18)
-                            .foregroundColor(accentColor)
+                            .foregroundColor(borderColor)
                             .rotationEffect(.degrees(isDropdownVisible ? 180 : 0))
                     }
                     .frame(width: 35)
