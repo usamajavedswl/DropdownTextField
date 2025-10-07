@@ -221,7 +221,19 @@ public struct SearchableMenu: View {
                                 .background(index == 0 && !searchText.isEmpty ? accentColor : Color.clear)
                             }
                         }
-                        if addNew && !searchText.trimmingCharacters(in: .whitespaces).isEmpty && !options.contains(where: { $0.lowercased() == searchText.lowercased()}){
+                        let trimmedSearch = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+                        let allowedCharacters = CharacterSet.alphanumerics
+                        let normalizedSearch = trimmedSearch.lowercased()
+                            .components(separatedBy: allowedCharacters.inverted)
+                            .joined()
+                        let normalizedOptions = options.map {
+                            $0.lowercased()
+                              .components(separatedBy: allowedCharacters.inverted)
+                              .joined()
+                        }
+                        let hasExactMatch = normalizedOptions.contains { $0 == normalizedSearch }
+                        let hasPrefixMatch = normalizedOptions.contains { normalizedSearch != "" && $0.hasPrefix(normalizedSearch)}
+                        if addNew && !trimmedSearch.isEmpty && !hasExactMatch && !hasPrefixMatch {
                             Button(action: {
                                 isOptionSelected = true
                                 isDropdownVisible = false
