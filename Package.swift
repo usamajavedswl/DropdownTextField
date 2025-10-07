@@ -10,7 +10,7 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "DropdownTextField",  // <- THIS must match the target name you import
+            name: "DropdownTextField",
             targets: ["DropdownTextField"]
         )
     ],
@@ -18,8 +18,10 @@ let package = Package(
         .target(
             name: "DropdownTextField",
             dependencies: [],
+            path: "Sources",
+            exclude: [],
             resources: [
-                .process("Resources")
+                .process("DropdownTextField/Resources")
             ]
         ),
         .testTarget(
