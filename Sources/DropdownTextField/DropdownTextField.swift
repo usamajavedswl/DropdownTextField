@@ -191,13 +191,13 @@ public struct SearchableMenu: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 18, height: 18)
                             .foregroundColor(accentColor)
-                            .padding(.trailing, 15)
                             .rotationEffect(.degrees(isDropdownVisible ? 180 : 0))
                     }
                     .frame(width: 35)
                     .padding(.trailing, 8)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .frame(height: height)
             .background( RoundedRectangle(cornerRadius: cornerRadius)
                 .strokeBorder(computedBorderColor, lineWidth: 1)
