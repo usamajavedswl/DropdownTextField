@@ -14,87 +14,30 @@
 import SwiftUI
 import Combine
 
-// MARK: - SearchableMenu
-public struct SearchableMenu: View {
-    // MARK: - State
+public struct DropdownTextField: View {
+    @Binding var searchText: String
+    @Binding var isDropdownVisible: Bool
+    
     @State private var isOptionSelected: Bool = false
     @State private var keyboardHeight: CGFloat = 0
     @FocusState private var isSearchFieldFocused: Bool
     
-    @Binding var searchText: String
-    @Binding var isDropdownVisible: Bool
-    
-    // MARK: - Core Options
-    public var options: [String]
-    public var placeholder: String
-    public var addNew: Bool
-    public var onTap: () -> Void
-    
-    // MARK: - Customization
-    public var textColor: Color = .primary
-    public var placeholderColor: Color = .gray
-    public var accentColor: Color = .blue
-    public var successColor: Color = .green
-    public var destructiveColor: Color = .red
-    public var borderColor: Color? = nil
-    public var font: Font = .system(size: 16)
-    public var height: CGFloat = 40
-    public var cornerRadius: CGFloat = 8
-    public var dropdownIcon: Image = Image(systemName: "chevron.down")
-    public var noMatchText: String = "No match"
-    public var addNewTextFormat: String = "Add %@"
-    
-    // MARK: - Filtering Logic
-    var filteredOptions: [String]{
-        if searchText.isEmpty {
-            return options
-        } else {
-            let allowedCharacters = CharacterSet.alphanumerics
-            let normalizedSearchText = searchText.lowercased()
-                .components(separatedBy: allowedCharacters.inverted)
-                .joined()
-            var results = [String]()
-            let normalizedOptions = options.map {
-                $0.lowercased()
-                    .components(separatedBy: allowedCharacters.inverted)
-                    .joined()
-            }
-            /// Exact matches
-            results += options.enumerated().filter {
-                normalizedOptions[$0.offset] == normalizedSearchText
-            }.map { $0.element }
-            
-            /// Prefix matches
-            results += options.enumerated().filter {
-                normalizedOptions[$0.offset].hasPrefix(normalizedSearchText) && !results.contains($0.element)
-            }.map { $0.element }
-            
-            /// Contains matches
-            results += options.enumerated().filter {
-                normalizedOptions[$0.offset].contains(normalizedSearchText) && !results.contains($0.element)
-            }.map { $0.element }
-            
-            return results
-        }
-    }
-    
-    // MARK: - Computed Border Color
-    var computedBorderColor: Color {
-        if let borderColor = borderColor {
-            return borderColor
-        } else {
-            if isOptionSelected && searchText.isEmpty {
-                return textColor
-            }
-            if isOptionSelected {
-                return successColor
-            }
-            if isDropdownVisible {
-                return accentColor
-            }
-            return textColor
-        }
-    }
+    private var options: [String]
+    private var placeholder: String
+    private var addNew: Bool
+    private var textColor: Color = .primary
+    private var placeholderColor: Color = .gray
+    private var accentColor: Color = .blue
+    private var successColor: Color = .green
+    private var destructiveColor: Color = .red
+    private var borderColor: Color? = nil
+    private var font: Font = .system(size: 16)
+    private var height: CGFloat = 40
+    private var cornerRadius: CGFloat = 8
+    private var dropdownIcon: Image = Image(systemName: "chevron.down")
+    private var noMatchText: String = "No match"
+    private var addNewTextFormat: String = "Add %@"
+    private var onTap: () -> Void
     
     // MARK: - Init
     public init(
@@ -137,7 +80,6 @@ public struct SearchableMenu: View {
         self.addNewTextFormat = addNewTextFormat
     }
     
-    // MARK: - Body
     public var body: some View {
         VStack(spacing: 2){
             HStack(spacing: 0){
@@ -275,11 +217,63 @@ public struct SearchableMenu: View {
         }
     }
     
-    // MARK: - Selection
     private func selectOption(_ option: String){
         searchText = option
         isOptionSelected = true
         isDropdownVisible = false
         isSearchFieldFocused = false
+    }
+}
+
+//MARK: - Private Helpers
+extension DropdownTextField {
+    private var filteredOptions: [String]{
+        if searchText.isEmpty {
+            return options
+        } else {
+            let allowedCharacters = CharacterSet.alphanumerics
+            let normalizedSearchText = searchText.lowercased()
+                .components(separatedBy: allowedCharacters.inverted)
+                .joined()
+            var results = [String]()
+            let normalizedOptions = options.map {
+                $0.lowercased()
+                    .components(separatedBy: allowedCharacters.inverted)
+                    .joined()
+            }
+            /// Exact matches
+            results += options.enumerated().filter {
+                normalizedOptions[$0.offset] == normalizedSearchText
+            }.map { $0.element }
+            
+            /// Prefix matches
+            results += options.enumerated().filter {
+                normalizedOptions[$0.offset].hasPrefix(normalizedSearchText) && !results.contains($0.element)
+            }.map { $0.element }
+            
+            /// Contains matches
+            results += options.enumerated().filter {
+                normalizedOptions[$0.offset].contains(normalizedSearchText) && !results.contains($0.element)
+            }.map { $0.element }
+            
+            return results
+        }
+    }
+    
+    private var computedBorderColor: Color {
+        if let borderColor = borderColor {
+            return borderColor
+        } else {
+            if isOptionSelected && searchText.isEmpty {
+                return textColor
+            }
+            if isOptionSelected {
+                return successColor
+            }
+            if isDropdownVisible {
+                return accentColor
+            }
+            return textColor
+        }
     }
 }
