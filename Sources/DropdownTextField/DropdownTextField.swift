@@ -141,51 +141,66 @@ public struct SearchableMenu: View {
     public var body: some View {
         VStack(spacing: 2){
             HStack(spacing: 0){
-                ZStack(alignment: .leading){
-                    if searchText.isEmpty {
-                        Text(placeholder)
-                            .foregroundColor(placeholderColor.opacity(0.7))
-                            .font(font)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                    }
-                    TextField("", text: $searchText, onEditingChanged: { isEditing in
-                        isDropdownVisible = isEditing
-                        if isEditing {
-                            isOptionSelected = false
-                            onTap()
-                            isSearchFieldFocused = true
+                HStack {
+                    ZStack(alignment: .leading){
+                        if searchText.isEmpty {
+                            Text(placeholder)
+                                .foregroundColor(placeholderColor.opacity(0.7))
+                                .font(font)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
                         }
-                    })
-                    .font(font)
-                    .tint(accentColor)
-                    .foregroundColor(textColor)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .focused($isSearchFieldFocused)
+                        TextField("", text: $searchText, onEditingChanged: { isEditing in isDropdownVisible = isEditing
+                            if isEditing {
+                                isOptionSelected = false
+                                onTap()
+                                isSearchFieldFocused = true
+                            }
+                        })
+                        .font(font)
+                        .tint(accentColor)
+                        .foregroundColor(textColor)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
+                        .focused($isSearchFieldFocused)
+                        .onTapGesture {
+                            if !searchText.isEmpty {
+                                searchText = ""
+                                isOptionSelected = false
+                                isDropdownVisible = true
+                                onTap()
+                                isSearchFieldFocused = true
+                            }
+                        }
+                        .onSubmit {
+                            if let topOption = filteredOptions.first {
+                                selectOption(topOption)
+                            } else if addNew && !searchText.isEmpty {
+                                selectOption(searchText)
+                            }
+                        }
+                    }
+                    Button(action: {
+                        isDropdownVisible.toggle()
+                        isSearchFieldFocused = isDropdownVisible
+                    }){
+                        dropdownIcon
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 18, height: 18)
+                            .foregroundColor(borderColor)
+                            .rotationEffect(.degrees(isDropdownVisible ? 180 : 0))
+                    }
+                    .frame(width: 35)
+                    .padding(.trailing, 8)
                 }
-
-                Button(action: {
-                    isDropdownVisible.toggle()
-                    isSearchFieldFocused = isDropdownVisible
-                }){
-                    dropdownIcon
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 18, height: 18)
-                        .foregroundColor(accentColor)
-                        .rotationEffect(.degrees(isDropdownVisible ? 180 : 0))
-                }
-                .frame(width: 35)
-                .padding(.trailing, 8)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .frame(height: height)
-            .background(
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .strokeBorder(computedBorderColor, lineWidth: 1)
+            .background( RoundedRectangle(cornerRadius: cornerRadius)
+                .strokeBorder(computedBorderColor, lineWidth: 1)
             )
             
             if isDropdownVisible {
@@ -204,9 +219,22 @@ public struct SearchableMenu: View {
                                 }
                                 .padding(.vertical, 4)
                                 .background(index == 0 && !searchText.isEmpty ? accentColor : Color.clear)
+                                .cornerRadius(8)
                             }
                         }
-                        if addNew && searchText != "" && !options.contains(where: { $0.lowercased() == searchText.lowercased()}){
+                        let trimmedSearch = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+                        let allowedCharacters = CharacterSet.alphanumerics
+                        let normalizedSearch = trimmedSearch.lowercased()
+                            .components(separatedBy: allowedCharacters.inverted)
+                            .joined()
+                        let normalizedOptions = options.map {
+                            $0.lowercased()
+                              .components(separatedBy: allowedCharacters.inverted)
+                              .joined()
+                        }
+                        let hasExactMatch = normalizedOptions.contains { $0 == normalizedSearch }
+                        let hasPrefixMatch = normalizedOptions.contains { normalizedSearch != "" && $0.hasPrefix(normalizedSearch)}
+                        if addNew && !trimmedSearch.isEmpty && !hasExactMatch && !hasPrefixMatch {
                             Button(action: {
                                 isOptionSelected = true
                                 isDropdownVisible = false
@@ -220,6 +248,7 @@ public struct SearchableMenu: View {
                                 }
                                 .padding(.vertical, 4)
                                 .background(accentColor)
+                                .cornerRadius(8)
                             }
                         } else if !addNew && searchText != "" && filteredOptions.isEmpty {
                             Text(noMatchText)
