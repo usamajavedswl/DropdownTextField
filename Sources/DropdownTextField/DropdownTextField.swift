@@ -219,6 +219,7 @@ public struct SearchableMenu: View {
                                 }
                                 .padding(.vertical, 4)
                                 .background(index == 0 && !searchText.isEmpty ? accentColor : Color.clear)
+                                .cornerRadius(8)
                             }
                         }
                         let trimmedSearch = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -247,6 +248,7 @@ public struct SearchableMenu: View {
                                 }
                                 .padding(.vertical, 4)
                                 .background(accentColor)
+                                .cornerRadius(8)
                             }
                         } else if !addNew && searchText != "" && filteredOptions.isEmpty {
                             Text(noMatchText)
