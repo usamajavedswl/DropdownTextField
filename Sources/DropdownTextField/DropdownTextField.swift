@@ -1,12 +1,21 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+//
+//  DropdownTextField.swift
+//  DropdownTextField
+//
+//  Created by Mian Usama on 16/09/2025.
+//  Copyright © 2025 Usama Javed. All rights reserved.
+//
+//  Description:
+//  A customizable searchable dropdown menu component built with SwiftUI.
+//  Supports custom fonts, colors, and dynamic option filtering.
+//  Designed and maintained by Usama Javed.
+//
 
 import SwiftUI
 import Combine
 
 // MARK: - SearchableMenu
 public struct SearchableMenu: View {
-    
     // MARK: - State
     @State private var isOptionSelected: Bool = false
     @State private var keyboardHeight: CGFloat = 0
@@ -94,7 +103,6 @@ public struct SearchableMenu: View {
         options: [String],
         placeholder: String,
         addNew: Bool = false,
-        onTap: @escaping () -> Void,
         textColor: Color = .primary,
         placeholderColor: Color = .gray,
         accentColor: Color = .blue,
@@ -106,7 +114,8 @@ public struct SearchableMenu: View {
         cornerRadius: CGFloat = 8,
         dropdownIcon: Image = Image(systemName: "chevron.down"),
         noMatchText: String = "No match",
-        addNewTextFormat: String = "Add %@"
+        addNewTextFormat: String = "Add %@",
+        onTap: @escaping () -> Void
     ){
         self._searchText = searchText
         self._isDropdownVisible = isDropdownVisible
@@ -132,62 +141,47 @@ public struct SearchableMenu: View {
     public var body: some View {
         VStack(spacing: 2){
             HStack(spacing: 0){
-                HStack {
-                    ZStack(alignment: .leading){
-                        if searchText.isEmpty {
-                            Text(placeholder)
-                                .foregroundColor(placeholderColor.opacity(0.7))
-                                .font(font)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
-                        }
-                        TextField("", text: $searchText, onEditingChanged: { isEditing in
-                            isDropdownVisible = isEditing
-                            if isEditing {
-                                isOptionSelected = false
-                                onTap()
-                                isSearchFieldFocused = true
-                            }
-                        })
-                        .font(font)
-                        .tint(accentColor)
-                        .foregroundColor(textColor)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
-                        .focused($isSearchFieldFocused)
-                        .onTapGesture {
-                            if !searchText.isEmpty {
-                                searchText = ""
-                                isOptionSelected = false
-                                isDropdownVisible = true
-                                onTap()
-                                isSearchFieldFocused = true
-                            }
-                        }
-                        .onSubmit {
-                            if let topOption = filteredOptions.first {
-                                selectOption(topOption)
-                            } else if addNew && !searchText.isEmpty {
-                                selectOption(searchText)
-                            }
-                        }
+                ZStack(alignment: .leading){
+                    if searchText.isEmpty {
+                        Text(placeholder)
+                            .foregroundColor(placeholderColor.opacity(0.7))
+                            .font(font)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
                     }
-                    Button(action: {
-                        isDropdownVisible.toggle()
-                        isSearchFieldFocused = isDropdownVisible
-                    }){
-                        dropdownIcon
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 18, height: 18)
-                            .foregroundColor(accentColor)
-                            .padding(.trailing, 15)
-                            .rotationEffect(.degrees(isDropdownVisible ? 180 : 0))
-                    }
+                    TextField("", text: $searchText, onEditingChanged: { isEditing in
+                        isDropdownVisible = isEditing
+                        if isEditing {
+                            isOptionSelected = false
+                            onTap()
+                            isSearchFieldFocused = true
+                        }
+                    })
+                    .font(font)
+                    .tint(accentColor)
+                    .foregroundColor(textColor)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
+                    .focused($isSearchFieldFocused)
                 }
+
+                Button(action: {
+                    isDropdownVisible.toggle()
+                    isSearchFieldFocused = isDropdownVisible
+                }){
+                    dropdownIcon
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 18, height: 18)
+                        .foregroundColor(accentColor)
+                        .rotationEffect(.degrees(isDropdownVisible ? 180 : 0))
+                }
+                .frame(width: 35)
+                .padding(.trailing, 8)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .frame(height: height)
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius)
@@ -196,7 +190,7 @@ public struct SearchableMenu: View {
             
             if isDropdownVisible {
                 ScrollView {
-                    LazyVStack(spacing: 0) {
+                    LazyVStack(spacing: 0){
                         ForEach(filteredOptions.indices, id: \.self){ index in
                             let option = filteredOptions[index]
                             Button(action: { selectOption(option)}){

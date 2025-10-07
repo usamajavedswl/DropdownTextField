@@ -1,8 +1,9 @@
 //
-//  File.swift
+//  Publisher+Extensions.swift
 //  DropdownTextField
 //
 //  Created by Mian Usama on 16/09/2025.
+//  Copyright © 2025 Usama Javed. All rights reserved.
 //
 
 
