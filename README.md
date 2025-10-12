@@ -17,7 +17,6 @@ It allows users to type, filter, and select from a list of options — similar t
 
 ```
 https://github.com/usamajavedswl/DropdownTextField.git
-
 ```
 
 4. Choose the latest version and add it to your target.

@@ -131,7 +131,7 @@ public struct DropdownTextField: View {
                         dropdownIcon
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 18, height: 18)
+                            .frame(width: height * 0.45, height: height * 0.45)
                             .foregroundColor(borderColor)
                             .rotationEffect(.degrees(isDropdownVisible ? 180 : 0))
                     }
