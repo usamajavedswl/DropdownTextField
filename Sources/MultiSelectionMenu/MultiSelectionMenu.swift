@@ -14,6 +14,7 @@
 import SwiftUI
 import Combine
 
+@available(iOS 17.0, *)
 public struct MultiSelectMenu: View {
     @State private var selectedOptions: [String] = []
     @State private var searchText: String = ""
@@ -227,6 +228,7 @@ public struct MultiSelectMenu: View {
 }
 
 // MARK: - Private helpers
+@available(iOS 17.0, *)
 extension MultiSelectMenu {
     private var filteredOptions: [String]{
         if searchText.isEmpty { return options }

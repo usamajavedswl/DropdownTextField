@@ -14,17 +14,20 @@ It allows users to type, filter, and select from a list of options — similar t
 1. In Xcode, open your project.
 2. Go to File → Add Packages...
 3. Enter the repository URL:
-
-https://github.com/usamajavedswl/DropdownTextField.git
+```https://github.com/usamajavedswl/DropdownTextField.git```
 
 4. Choose the latest version and add it to your target.
 Then simply import it:
 
-```import DropdownTextField```
+```swift 
+import DropdownTextField
+```
 
 ### Usage Example
 Here’s how to use SearchableMenu inside your SwiftUI view:
-``` 
+
+
+```swift
 import SwiftUI
 import DropdownTextField
   
@@ -50,13 +53,13 @@ struct ContentView: View {
         }
         .padding()
     }
-}
-```
+}```
+
 
 ### Full Initializer
 For customization, you can use all available parameters:
 
-```
+```swift
 SearchableMenu(
     searchText: $searchText,
     isDropdownVisible: $isDropdownVisible,
@@ -77,12 +80,11 @@ SearchableMenu(
     addNewTextFormat: "Add \"%@\""
 ){
     print("Dropdown opened")
-}
-```
+}```
 
 ### Notes
-*onTap* is called when the dropdown field becomes active.
-*addNew* enables the option to add new items that don’t exist in the list.
+**onTap** is called when the dropdown field becomes active.
+**addNew** enables the option to add new items that don’t exist in the list.
 The view automatically filters options based on the typed text.
 
 ## License
