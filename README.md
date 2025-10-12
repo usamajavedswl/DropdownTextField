@@ -14,7 +14,11 @@ It allows users to type, filter, and select from a list of options — similar t
 1. In Xcode, open your project.
 2. Go to File → Add Packages...
 3. Enter the repository URL:
-```https://github.com/usamajavedswl/DropdownTextField.git```
+
+```
+https://github.com/usamajavedswl/DropdownTextField.git
+
+```
 
 4. Choose the latest version and add it to your target.
 Then simply import it:
@@ -53,7 +57,8 @@ struct ContentView: View {
         }
         .padding()
     }
-}```
+}
+```
 
 
 ### Full Initializer
@@ -80,7 +85,8 @@ SearchableMenu(
     addNewTextFormat: "Add \"%@\""
 ){
     print("Dropdown opened")
-}```
+}
+```
 
 ### Notes
 **onTap** is called when the dropdown field becomes active.
